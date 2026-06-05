@@ -87,20 +87,29 @@ npm run build                   # tsup → dist/
 ## Releasing
 
 CI (`.github/workflows/ci.yml`) runs lint + tests + build on Node 18/20/22 for
-every push and PR. Releases are tag-driven:
+every push and PR. Versioning and publishing are handled by
+[Changesets](https://github.com/changesets/changesets).
+
+**When you make a change**, record its impact:
 
 ```bash
-npm version patch          # bumps package.json + creates a vX.Y.Z tag
-git push --follow-tags
+npm run changeset      # pick patch/minor/major + write a summary
+git add .changeset && git commit -m "..."   # commit the changeset with your work
 ```
 
-Pushing the tag triggers `.github/workflows/release.yml`, which re-runs the
-build, verifies the tag matches `package.json`, and publishes to npm with
-[provenance](https://docs.npmjs.com/generating-provenance-statements)
-(`npm publish --provenance --access public`).
+**Releasing is automatic** via `.github/workflows/release.yml`:
+
+1. Pushing changesets to `master` opens (or updates) a **"Version Packages"**
+   PR that bumps the version and updates `CHANGELOG.md`.
+2. Merging that PR publishes to npm with
+   [provenance](https://docs.npmjs.com/generating-provenance-statements)
+   (`changeset publish`, `--access public`) and creates the git tag + GitHub
+   release.
 
 **One-time setup:** add an `NPM_TOKEN` secret (an npm automation/granular token
-with publish rights) to the repository's Actions secrets.
+with publish rights to the `@pentestattacker007` scope) to the repository's
+Actions secrets. The workflow already grants the `id-token` permission needed
+for provenance.
 
 ## License
 

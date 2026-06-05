@@ -1,18 +1,23 @@
 name: release
 
-# Publish to npm when a version tag is pushed, e.g.:
-#   npm version patch && git push --follow-tags
+# Changesets flow:
+#  - On push to master with pending changesets → opens/updates a "Version
+#    Packages" PR that bumps the version + updates CHANGELOG.
+#  - When that PR merges → publishes to npm (with provenance) and creates the
+#    git tag + GitHub release.
 on:
   push:
-    tags:
-      - "v*"
+    branches: [master]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  contents: read
-  id-token: write # required for npm provenance (trusted publishing)
+  contents: write # create version-bump commits, tags, releases
+  pull-requests: write # open/update the Version Packages PR
+  id-token: write # npm provenance attestation
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,19 +35,12 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      # Fail fast if the git tag and package.json version disagree.
-      - name: Verify tag matches package.json version
-        run: |
-          PKG_VERSION="$(node -p "require('./package.json').version")"
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          echo "tag=$TAG_VERSION package.json=$PKG_VERSION"
-          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
-            echo "::error::Tag v$TAG_VERSION does not match package.json version $PKG_VERSION"
-            exit 1
-          fi
-
-      # --provenance publishes a signed build-provenance attestation (uses the
-      # id-token permission above); --access public is required for scoped pkgs.
-      - run: npm publish --provenance --access public
+      - name: Create Release PR or publish
+        uses: changesets/action@v1
+        with:
+          version: npm run version
+          publish: npm run release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true" # signed provenance via changeset publish
