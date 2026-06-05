@@ -1,0 +1,7 @@
+{
+  "name": "bughunt",
+  "description": "Security-testing methodology library (recon, app analysis, AI-exploit-assist, PortSwigger) for authorized bug bounty / pentest work. Defensive knowledge layer.",
+  "version": "0.1.0",
+  "author": "fahad",
+  "skills": "../skills"
+}
