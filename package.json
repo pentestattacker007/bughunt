@@ -35,6 +35,14 @@
   ],
   "author": "fahad",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pentestattacker007/bughunt.git"
+  },
+  "homepage": "https://github.com/pentestattacker007/bughunt#readme",
+  "bugs": {
+    "url": "https://github.com/pentestattacker007/bughunt/issues"
+  },
   "dependencies": {
     "commander": "^12.1.0",
     "zod": "^3.23.8"
