@@ -1,5 +1,5 @@
 {
-  "name": "@fahad/bughunt",
+  "name": "@pentestattacker007/bughunt",
   "version": "0.1.0",
   "description": "Security-testing methodology CLI + skills for AI agents (recon, app analysis, AI-assist, PortSwigger). Defensive, authorized-use knowledge layer.",
   "type": "module",

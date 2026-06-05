@@ -16,9 +16,9 @@ recon-asset-discovery  →  ai-exploit-assist  →  app-analysis-testing  →  p
 ## Install
 
 ```bash
-npm install -g @fahad/bughunt      # global
+npm install -g @pentestattacker007/bughunt      # global
 # or run without installing:
-npx -y @fahad/bughunt skills list
+npx -y @pentestattacker007/bughunt skills list
 ```
 
 ## Use (agent or human)
