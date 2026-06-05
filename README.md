@@ -84,6 +84,24 @@ npm test                        # vitest
 npm run build                   # tsup → dist/
 ```
 
+## Releasing
+
+CI (`.github/workflows/ci.yml`) runs lint + tests + build on Node 18/20/22 for
+every push and PR. Releases are tag-driven:
+
+```bash
+npm version patch          # bumps package.json + creates a vX.Y.Z tag
+git push --follow-tags
+```
+
+Pushing the tag triggers `.github/workflows/release.yml`, which re-runs the
+build, verifies the tag matches `package.json`, and publishes to npm with
+[provenance](https://docs.npmjs.com/generating-provenance-statements)
+(`npm publish --provenance --access public`).
+
+**One-time setup:** add an `NPM_TOKEN` secret (an npm automation/granular token
+with publish rights) to the repository's Actions secrets.
+
 ## License
 
 MIT
